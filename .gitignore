@@ -46,3 +46,6 @@ __pycache__/
 build/
 dist/
 out/
+
+# Vercel
+.vercel

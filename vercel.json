@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "hashvault-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    },
+    {
+      "src": "hashvault-backend/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "hashvault-backend/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "hashvault-frontend/$1"
+    }
+  ]
+}
