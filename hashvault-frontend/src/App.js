@@ -48,7 +48,12 @@ function App() {
     setShowLanding(false);
     setShowDocs(true);
   };
-  const backToApp = () => setShowDocs(false);
+  const backToApp = () => {
+    setShowDocs(false);
+    if (!connectedWallet) {
+      setShowLanding(true);
+    }
+  };
 
   if (showLanding) {
     return <LandingPage onEnterApp={enterApp} onViewDocs={showDocsPage} darkMode={darkMode} />;
@@ -58,18 +63,22 @@ function App() {
     return <DocsPage onBack={backToApp} darkMode={darkMode} />;
   }
 
+  if (!connectedWallet) {
+    return <LandingPage onEnterApp={enterApp} onViewDocs={showDocsPage} darkMode={darkMode} />;
+  }
+
   return (
     <div
       className={`min-h-screen font-[Poppins] px-4 py-10 transition-colors duration-500 ${darkMode
         ? "bg-gray-950 text-white"
-        : "bg-[#f5f3f0] text-gray-800"
+        : "bg-gray-100 text-gray-800"
         }`}
     >
       {/* Theme Toggle */}
       <div className="fixed top-5 right-5 z-50">
         <button
           onClick={toggleTheme}
-          className={`p-2 rounded-full shadow-lg transition-colors duration-500 ${darkMode ? "bg-gray-700 text-yellow-300" : "bg-yellow-100 text-orange-600"
+          className={`p-2 rounded-full shadow-lg transition-colors duration-500 ${darkMode ? "bg-gray-700 text-yellow-300" : "bg-gray-200 text-gray-700"
             }`}
         >
           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -90,7 +99,7 @@ function App() {
 
       {/* Toggle Switch */}
       <div className="max-w-2xl mx-auto mb-8">
-        <div className={`relative flex rounded-xl p-1 ${darkMode ? "bg-gray-800" : "bg-gray-200"}`}>
+        <div className={`relative flex rounded-xl p-1 ${darkMode ? "bg-gray-800" : "bg-gray-300"}`}>
           <div
             className={`absolute top-1 bottom-1 w-1/3 bg-blue-500 rounded-lg transition-transform duration-300 ease-out ${
               activeTab === 'inbox' ? 'translate-x-full' : activeTab === 'retrieve' ? 'translate-x-[200%]' : 'translate-x-0'
@@ -101,7 +110,7 @@ function App() {
             className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors duration-300 ${
               activeTab === 'upload'
                 ? 'text-white'
-                : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-800'
+                : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-700 hover:text-gray-900'
             }`}
           >
             <Upload className="w-4 h-4" />
@@ -112,7 +121,7 @@ function App() {
             className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors duration-300 ${
               activeTab === 'inbox'
                 ? 'text-white'
-                : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-800'
+                : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-700 hover:text-gray-900'
             }`}
           >
             <Mail className="w-4 h-4" />
@@ -123,7 +132,7 @@ function App() {
             className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors duration-300 ${
               activeTab === 'retrieve'
                 ? 'text-white'
-                : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-800'
+                : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-700 hover:text-gray-900'
             }`}
           >
             <Download className="w-4 h-4" />

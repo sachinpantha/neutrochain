@@ -1,31 +1,25 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { FaRocket, FaShieldAlt, FaGem, FaEthereum, FaBolt, FaUsers, FaCode, FaGlobe, FaUserSecret, FaEyeSlash, FaMask } from 'react-icons/fa';
-import { HiSparkles, HiLightningBolt } from 'react-icons/hi';
-import { BiCube } from 'react-icons/bi';
-import { RiSpyFill } from 'react-icons/ri';
+import { FaRocket, FaShieldAlt, FaGem, FaBolt, FaCode, FaGlobe, FaUserSecret, FaEyeSlash, FaMask } from 'react-icons/fa';
 import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
 import { Wallet } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
 const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
-  const [hoveredFeature, setHoveredFeature] = useState(null);
-  const [walletAddress, setWalletAddress] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [typewriterText, setTypewriterText] = useState('');
   
-  const descriptions = [
-    { text: "Send encrypted files using wallet addresses as keys.", highlights: [{ start: 5, end: 20, color: "text-cyan-400" }] },
-    { text: "Zero identity exposure. Complete anonymity guaranteed.", highlights: [{ start: 0, end: 22, color: "text-purple-400" }] },
-    { text: "Each transfer generates unique NFTs for privacy.", highlights: [{ start: 31, end: 35, color: "text-pink-400" }] },
-    { text: "Decentralized storage. No central surveillance.", highlights: [{ start: 0, end: 21, color: "text-green-400" }] },
-    { text: "Military-grade encryption. Untraceable transfers.", highlights: [{ start: 0, end: 25, color: "text-red-400" }] },
-    { text: "Your files. Your keys. Your privacy.", highlights: [{ start: 23, end: 36, color: "text-yellow-400" }] }
-  ];
-  
   useEffect(() => {
+    const descriptions = [
+      { text: "Send encrypted files using wallet addresses as keys.", highlights: [{ start: 5, end: 20, color: "text-cyan-400" }] },
+      { text: "Zero identity exposure. Complete anonymity guaranteed.", highlights: [{ start: 0, end: 22, color: "text-purple-400" }] },
+      { text: "Each transfer generates unique NFTs for privacy.", highlights: [{ start: 31, end: 35, color: "text-pink-400" }] },
+      { text: "Decentralized storage. No central surveillance.", highlights: [{ start: 0, end: 21, color: "text-green-400" }] },
+      { text: "Military-grade encryption. Untraceable transfers.", highlights: [{ start: 0, end: 25, color: "text-red-400" }] },
+      { text: "Your files. Your keys. Your privacy.", highlights: [{ start: 23, end: 36, color: "text-yellow-400" }] }
+    ];
     let currentIndex = 0;
     let currentText = '';
     let isDeleting = false;
@@ -92,7 +86,6 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await provider.send('eth_requestAccounts', []);
-      setWalletAddress(accounts[0]);
       setIsConnected(true);
       toast.success('MetaMask connected successfully!');
       // Auto-enter app after successful connection
@@ -154,7 +147,6 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
         {Array.from({ length: 20 }, (_, i) => {
           const initialX = (i * 5) % 100;
           const initialY = (i * 7) % 100;
-          const duration = 8 + (i % 5);
           return (
             <motion.div
               key={`particle-${i}`}
@@ -343,9 +335,47 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
               Stay
               <span className="bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"> Anonymous</span>
             </h2>
-            <p className={`text-lg sm:text-xl max-w-2xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Your identity remains completely hidden. No traces, no logs, no surveillance.
-            </p>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.4 }}
+              className={`text-lg sm:text-xl max-w-2xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+            >
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.6 }}
+              >
+                Your identity remains completely hidden.
+              </motion.span>
+              {' '}
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.9 }}
+                className="text-red-400 font-medium"
+              >
+                No traces,
+              </motion.span>
+              {' '}
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 2.2 }}
+                className="text-red-400 font-medium"
+              >
+                no logs,
+              </motion.span>
+              {' '}
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 2.5 }}
+                className="text-red-400 font-medium"
+              >
+                no surveillance.
+              </motion.span>
+            </motion.p>
           </motion.div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -356,8 +386,6 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 1.4 + index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -10 }}
-                onHoverStart={() => setHoveredFeature(index)}
-                onHoverEnd={() => setHoveredFeature(null)}
                 className={`p-6 sm:p-8 rounded-2xl ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} hover:shadow-2xl transition-all duration-300 cursor-pointer group`}
               >
                 <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white mb-4 sm:mb-6 group-hover:shadow-lg`}>
@@ -405,7 +433,30 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             </motion.div>
             
             <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              Ready to Go <span className="bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent">Invisible</span>?
+              Ready to Go{' '}
+              <motion.span 
+                animate={{ 
+                  opacity: [1, 0.3, 1, 0.1, 1, 0.5, 1],
+                  textShadow: [
+                    '0 0 5px rgba(156, 163, 175, 0.5)',
+                    '0 0 2px rgba(156, 163, 175, 0.2)',
+                    '0 0 8px rgba(156, 163, 175, 0.8)',
+                    '0 0 1px rgba(156, 163, 175, 0.1)',
+                    '0 0 10px rgba(156, 163, 175, 1)',
+                    '0 0 3px rgba(156, 163, 175, 0.3)',
+                    '0 0 5px rgba(156, 163, 175, 0.5)'
+                  ]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 3,
+                  ease: "easeInOut"
+                }}
+                className="bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"
+              >
+                Invisible
+              </motion.span>?
             </h2>
             
             <p className={`text-lg sm:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>

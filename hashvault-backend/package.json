@@ -14,22 +14,10 @@
   "dependencies": {
     "axios": "^1.11.0",
     "canvas": "^2.11.2",
-    "circomlib": "^2.0.5",
     "cors": "^2.8.5",
-    "crypto-js": "^4.2.0",
-    "dotenv": "^17.2.1",
     "ethers": "^6.13.4",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.1.0",
-    "express-validator": "^7.2.1",
-    "ffjavascript": "^0.3.1",
-    "form-data": "^4.0.4",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "redis": "^5.8.2",
-    "snarkjs": "^0.7.5",
-    "socket.io": "^4.8.1"
+    "multer": "^2.0.2"
   },
   "description": ""
 }

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Wallet, Send } from 'lucide-react';
+import { apiService } from '../utils/api';
 
 const NeutroUpload = ({ darkMode, connectedWallet }) => {
   const [file, setFile] = useState(null);
@@ -10,6 +10,7 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleUpload = async () => {
     if (!file || !receiverAddress || !connectedWallet) {
@@ -31,7 +32,7 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
       formData.append('signature', signature);
       formData.append('message', message);
 
-      const response = await axios.post('http://localhost:5000/api/neutrochain/send-to-inbox', formData);
+      await apiService.sendToInbox(formData);
       
       setUploadSuccess(true);
       toast.success('File sent to receiver\'s inbox successfully!');
@@ -48,10 +49,27 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      setFile(droppedFile);
+    }
+  };
 
   return (
-    <div className={`p-8 rounded-2xl shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className={`p-8 rounded-2xl shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
       <h2 className="text-2xl font-bold mb-6 text-center">Encrypt & Send File</h2>
       
       <div className="space-y-4">
@@ -73,9 +91,17 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
               />
               <label
                 htmlFor="file-upload"
-                className={`w-full flex items-center justify-center gap-3 py-6 px-4 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300 hover:scale-[1.02] ${darkMode
-                  ? "border-gray-600 bg-gray-700/50 hover:border-blue-400 hover:bg-gray-700"
-                  : "border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50"
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`w-full flex items-center justify-center gap-3 py-6 px-4 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
+                  isDragging
+                    ? darkMode
+                      ? "border-blue-400 bg-blue-900/20 scale-[1.02]"
+                      : "border-blue-400 bg-blue-100 scale-[1.02]"
+                    : darkMode
+                    ? "border-gray-600 bg-gray-700/50 hover:border-blue-400 hover:bg-gray-700"
+                    : "border-gray-300 bg-gray-100 hover:border-blue-400 hover:bg-blue-50"
                 }`}
               >
                 <div className={`p-3 rounded-full ${darkMode ? "bg-blue-600" : "bg-blue-500"}`}>
@@ -85,10 +111,10 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
                 </div>
                 <div className="text-center">
                   <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-700"}`}>
-                    {file ? file.name : 'Choose File to Send'}
+                    {file ? file.name : isDragging ? 'Drop file here' : 'Choose File to Send'}
                   </p>
                   <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                    Click to browse files
+                    {isDragging ? 'Release to upload' : 'Click to browse or drag & drop'}
                   </p>
                 </div>
               </label>
@@ -102,7 +128,7 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
               value={receiverAddress}
               onChange={(e) => setReceiverAddress(e.target.value)}
               placeholder="0x..."
-              className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
+              className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'}`}
             />
           </div>
 
@@ -112,7 +138,7 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Add a message..."
-              className={`w-full p-3 rounded-lg border h-20 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'}`}
+              className={`w-full p-3 rounded-lg border h-20 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'}`}
             />
           </div>
 

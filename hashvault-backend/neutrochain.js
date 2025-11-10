@@ -1,19 +1,15 @@
 const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 const { ethers } = require('ethers');
 const { createCanvas, loadImage } = require('canvas');
 const { uploadEncryptedToPinata } = require('./pinata');
-const MilitaryGradeCrypto = require('./crypto-utils');
 
 const router = express.Router();
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 25 * 1024 * 1024 }
 });
-
-const JWT_SECRET = process.env.JWT_SECRET || 'neutrochain-secret';
 
 // In-memory storage for inbox (in production, use a database)
 const inboxStorage = new Map();

@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Download, Wallet, FileText } from 'lucide-react';
+import { apiService } from '../utils/api';
 
 const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
   const [nftFile, setNftFile] = useState(null);
   const [nftPreview, setNftPreview] = useState(null);
   const [decrypting, setDecrypting] = useState(false);
   const [decryptedData, setDecryptedData] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleNftUpload = (e) => {
     const file = e.target.files[0];
+    processFile(file);
+  };
+
+  const processFile = (file) => {
     if (file && file.type.startsWith('image/')) {
       setNftFile(file);
       const previewUrl = URL.createObjectURL(file);
@@ -19,6 +24,25 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
       toast.success('NFT image loaded successfully!');
     } else {
       toast.error('Please select a valid image file');
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      processFile(droppedFile);
     }
   };
 
@@ -40,7 +64,7 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
       formData.append('receiverAddress', connectedWallet);
       formData.append('signature', signature);
 
-      const response = await axios.post('http://localhost:5000/api/neutrochain/decrypt-download', formData);
+      const response = await apiService.decryptDownload(formData);
 
       setDecryptedData(response.data);
       toast.success('File decrypted successfully!');
@@ -71,7 +95,7 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
   };
 
   return (
-    <div className={`p-8 rounded-2xl shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className={`p-8 rounded-2xl shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
       <h2 className="text-2xl font-bold mb-6 text-center">Decrypt & Receive File</h2>
       
       <div className="space-y-4">
@@ -94,9 +118,17 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
               />
               <label
                 htmlFor="nft-upload"
-                className={`w-full flex items-center justify-center gap-3 py-6 px-4 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300 hover:scale-[1.02] ${darkMode
-                  ? "border-gray-600 bg-gray-700/50 hover:border-purple-400 hover:bg-gray-700"
-                  : "border-gray-300 bg-gray-50 hover:border-purple-400 hover:bg-purple-50"
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`w-full flex items-center justify-center gap-3 py-6 px-4 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300 hover:scale-[1.02] ${
+                  isDragging
+                    ? darkMode
+                      ? "border-purple-400 bg-purple-900/20 scale-[1.02]"
+                      : "border-purple-400 bg-purple-100 scale-[1.02]"
+                    : darkMode
+                    ? "border-gray-600 bg-gray-700/50 hover:border-purple-400 hover:bg-gray-700"
+                    : "border-gray-300 bg-gray-100 hover:border-purple-400 hover:bg-purple-50"
                 }`}
               >
                 <div className={`p-3 rounded-full ${darkMode ? "bg-purple-600" : "bg-purple-500"}`}>
@@ -106,10 +138,10 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
                 </div>
                 <div className="text-center">
                   <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-700"}`}>
-                    {nftFile ? nftFile.name : 'Choose NFT Image'}
+                    {nftFile ? nftFile.name : isDragging ? 'Drop NFT image here' : 'Choose NFT Image'}
                   </p>
                   <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                    Click to browse image files
+                    {isDragging ? 'Release to upload' : 'Click to browse or drag & drop image files'}
                   </p>
                 </div>
               </label>
@@ -117,7 +149,7 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
           </div>
 
           {nftPreview && (
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
               <h3 className="font-bold mb-2">NFT Preview:</h3>
               <img src={nftPreview} alt="NFT Preview" className="w-full rounded-lg" />
             </div>
@@ -139,7 +171,7 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
           </button>
 
           {decryptedData && (
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
               <h3 className="font-bold mb-2">✅ Decryption Successful!</h3>
               <p className="text-sm mb-2">File: {decryptedData.filename}</p>
               {decryptedData.message && (
