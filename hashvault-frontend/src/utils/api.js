@@ -30,8 +30,11 @@ export const apiService = {
   },
 
   // Generate NFT
-  generateNFT: (fileId) => {
-    return api.post(`${API_ENDPOINTS.GENERATE_NFT}/${fileId}`, {}, {
+  generateNFT: (fileId, requestorAddress, signature) => {
+    return api.post(`${API_ENDPOINTS.GENERATE_NFT}/${fileId}`, {
+      requestorAddress,
+      signature
+    }, {
       responseType: 'blob'
     });
   },
@@ -40,6 +43,14 @@ export const apiService = {
   decryptDownload: (formData) => {
     return api.post(API_ENDPOINTS.DECRYPT_DOWNLOAD, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+
+  // Encrypt for multiple recipients
+  encryptMulti: (formData) => {
+    return api.post(API_ENDPOINTS.ENCRYPT_MULTI, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      responseType: 'blob'
     });
   }
 };

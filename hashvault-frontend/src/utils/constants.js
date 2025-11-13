@@ -7,7 +7,8 @@ export const API_ENDPOINTS = {
   GET_INBOX: '/api/neutrochain/inbox',
   DELETE_FILE: '/api/neutrochain/inbox',
   GENERATE_NFT: '/api/neutrochain/generate-nft',
-  DECRYPT_DOWNLOAD: '/api/neutrochain/decrypt-download'
+  DECRYPT_DOWNLOAD: '/api/neutrochain/decrypt-download',
+  ENCRYPT_MULTI: '/api/neutrochain/encrypt-multi'
 };
 
 // File Upload Limits

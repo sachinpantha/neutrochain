@@ -22,6 +22,31 @@ function addToInbox(receiverAddress, fileData, senderAddress, message) {
     return fileId;
 }
 
+function addToMultipleInboxes(receiverAddresses, fileData, senderAddress, message) {
+    const fileId = crypto.randomUUID();
+    const inboxFile = {
+        id: fileId,
+        filename: fileData.originalname,
+        mimetype: fileData.mimetype,
+        fileData: fileData.buffer.toString('base64'),
+        message: message || '',
+        senderAddress,
+        recipients: receiverAddresses.map(addr => addr.toLowerCase()),
+        isMultiRecipient: true,
+        timestamp: Date.now()
+    };
+
+    receiverAddresses.forEach(address => {
+        const normalizedAddress = address.toLowerCase();
+        if (!inboxStorage.has(normalizedAddress)) {
+            inboxStorage.set(normalizedAddress, []);
+        }
+        inboxStorage.get(normalizedAddress).push(inboxFile);
+    });
+    
+    return fileId;
+}
+
 function getInboxFiles(address) {
     return inboxStorage.get(address.toLowerCase()) || [];
 }
@@ -47,4 +72,4 @@ function deleteFile(fileId) {
     return false;
 }
 
-module.exports = { addToInbox, getInboxFiles, findFileById, deleteFile };
+module.exports = { addToInbox, addToMultipleInboxes, getInboxFiles, findFileById, deleteFile };

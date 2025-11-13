@@ -1,19 +1,25 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
-import { Wallet, Send } from 'lucide-react';
+import { Wallet, Send, Plus, X } from 'lucide-react';
 import { apiService } from '../utils/api';
 
 const NeutroUpload = ({ darkMode, connectedWallet }) => {
   const [file, setFile] = useState(null);
   const [receiverAddress, setReceiverAddress] = useState('');
+  const [receiverAddresses, setReceiverAddresses] = useState(['']);
+  const [isMultiRecipient, setIsMultiRecipient] = useState(false);
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleUpload = async () => {
-    if (!file || !receiverAddress || !connectedWallet) {
+    const validAddresses = isMultiRecipient 
+      ? receiverAddresses.filter(addr => addr.trim())
+      : [receiverAddress].filter(addr => addr.trim());
+    
+    if (!file || validAddresses.length === 0 || !connectedWallet) {
       toast.error('Please fill all fields');
       return;
     }
@@ -27,7 +33,13 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('receiverAddress', receiverAddress);
+      
+      if (isMultiRecipient) {
+        formData.append('receiverAddresses', JSON.stringify(validAddresses));
+      } else {
+        formData.append('receiverAddress', validAddresses[0]);
+      }
+      
       formData.append('senderAddress', connectedWallet);
       formData.append('signature', signature);
       formData.append('message', message);
@@ -35,11 +47,15 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
       await apiService.sendToInbox(formData);
       
       setUploadSuccess(true);
-      toast.success('File sent to receiver\'s inbox successfully!');
+      const successMsg = isMultiRecipient 
+        ? `File sent to ${validAddresses.length} recipients successfully!`
+        : 'File sent to receiver\'s inbox successfully!';
+      toast.success(successMsg);
       
       // Reset form
       setFile(null);
       setReceiverAddress('');
+      setReceiverAddresses(['']);
       setMessage('');
       setTimeout(() => setUploadSuccess(false), 3000);
     } catch (error) {
@@ -47,6 +63,24 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
     } finally {
       setUploading(false);
     }
+  };
+
+  const addRecipient = () => {
+    if (receiverAddresses.length < 10) {
+      setReceiverAddresses([...receiverAddresses, '']);
+    }
+  };
+
+  const removeRecipient = (index) => {
+    if (receiverAddresses.length > 1) {
+      setReceiverAddresses(receiverAddresses.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateRecipient = (index, value) => {
+    const updated = [...receiverAddresses];
+    updated[index] = value;
+    setReceiverAddresses(updated);
   };
 
   const handleDragOver = (e) => {
@@ -122,14 +156,67 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Receiver's Wallet Address</label>
-            <input
-              type="text"
-              value={receiverAddress}
-              onChange={(e) => setReceiverAddress(e.target.value)}
-              placeholder="0x..."
-              className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'}`}
-            />
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium">Recipients</label>
+              <button
+                type="button"
+                onClick={() => setIsMultiRecipient(!isMultiRecipient)}
+                className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                  isMultiRecipient 
+                    ? 'bg-blue-500 text-white' 
+                    : darkMode ? 'bg-gray-600 text-gray-300' : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {isMultiRecipient ? 'Multiple Recipients' : 'Single Recipient'}
+              </button>
+            </div>
+            
+            {isMultiRecipient ? (
+              <div className="space-y-2">
+                {receiverAddresses.map((address, index) => (
+                  <div key={index} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => updateRecipient(index, e.target.value)}
+                      placeholder="0x..."
+                      className={`flex-1 p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'}`}
+                    />
+                    {receiverAddresses.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeRecipient(index)}
+                        className="p-3 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {receiverAddresses.length < 10 && (
+                  <button
+                    type="button"
+                    onClick={addRecipient}
+                    className={`w-full p-3 border-2 border-dashed rounded-lg flex items-center justify-center gap-2 transition-colors ${
+                      darkMode 
+                        ? 'border-gray-600 hover:border-blue-400 hover:bg-gray-700' 
+                        : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Recipient ({receiverAddresses.length}/10)
+                  </button>
+                )}
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={receiverAddress}
+                onChange={(e) => setReceiverAddress(e.target.value)}
+                placeholder="0x..."
+                className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'}`}
+              />
+            )}
           </div>
 
           <div>
@@ -144,7 +231,7 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
 
           <button
             onClick={handleUpload}
-            disabled={uploading || !file || !receiverAddress}
+            disabled={uploading || !file || (!receiverAddress && !receiverAddresses.some(addr => addr.trim()))}
             className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-500 text-white py-3 px-4 rounded-lg font-medium transition-colors"
           >
             {uploading ? (
@@ -160,7 +247,11 @@ const NeutroUpload = ({ darkMode, connectedWallet }) => {
           {uploadSuccess && (
             <div className={`p-4 rounded-lg ${darkMode ? 'bg-green-800' : 'bg-green-100'} border ${darkMode ? 'border-green-600' : 'border-green-300'}`}>
               <h3 className="font-bold mb-2 text-green-400">✅ File Sent Successfully!</h3>
-              <p className="text-sm">The receiver will find your file in their inbox.</p>
+              <p className="text-sm">
+                {isMultiRecipient 
+                  ? 'All recipients will find your file in their inbox.' 
+                  : 'The receiver will find your file in their inbox.'}
+              </p>
             </div>
           )}
         </div>

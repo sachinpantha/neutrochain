@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
-import { Download, Image, Trash2, Mail, X, Search } from 'lucide-react';
+import { Download, Image, Trash2, Mail, X, Search, Users } from 'lucide-react';
 import { apiService } from '../utils/api';
 
 const Inbox = ({ darkMode, connectedWallet }) => {
@@ -44,7 +45,11 @@ const Inbox = ({ darkMode, connectedWallet }) => {
 
   const generateNFT = async (fileId) => {
     try {
-      const response = await apiService.generateNFT(fileId);
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const signature = await signer.signMessage('NeutroChain NFT Generate');
+      
+      const response = await apiService.generateNFT(fileId, connectedWallet, signature);
       
       const imageBlob = new Blob([response.data], { type: 'image/png' });
       const imageUrl = URL.createObjectURL(imageBlob);
@@ -126,10 +131,25 @@ const Inbox = ({ darkMode, connectedWallet }) => {
             <div key={file.id} className={`p-4 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-200'}`}>
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="font-semibold">{file.filename}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold">{file.filename}</h3>
+                    {file.isMultiRecipient && (
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full ${
+                        darkMode ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        <Users className="w-3 h-3" />
+                        {file.recipients?.length || 'Multi'}
+                      </span>
+                    )}
+                  </div>
                   <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     From: {file.senderAddress.slice(0, 6)}...{file.senderAddress.slice(-4)}
                   </p>
+                  {file.isMultiRecipient && file.recipients && (
+                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                      Shared with {file.recipients.length} recipients
+                    </p>
+                  )}
                   {file.message && (
                     <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                       "{file.message}"
