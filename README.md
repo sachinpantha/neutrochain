@@ -23,21 +23,9 @@ Deploy the backend to Render:
 4. Render will automatically detect the `render.yaml` configuration
 5. Set up environment variables in Render dashboard
 
-### Frontend Deployment (Vercel)
-Deploy the frontend to Vercel:
-
-```bash
-cd hashvault-frontend
-vercel --prod
-```
-
 ## Environment Variables
 
 **Backend (Render):**
 - Backend API keys
 - Database connections
 - Blockchain network settings
-
-**Frontend (Vercel):**
-- Backend API URL (from Render deployment)
-- Frontend-specific configurations
