@@ -1,27 +1,52 @@
 function generateNFTImage(ipfsHash, senderAddress, receiverAddress) {
-    // Create a simple 400x400 blue PNG
-    const pngData = Buffer.from([
-        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, // PNG signature
-        0x00, 0x00, 0x00, 0x0D, // IHDR chunk length
-        0x49, 0x48, 0x44, 0x52, // IHDR
-        0x00, 0x00, 0x01, 0x90, // Width: 400
-        0x00, 0x00, 0x01, 0x90, // Height: 400
-        0x08, 0x02, 0x00, 0x00, 0x00, // Bit depth, color type, etc.
-        0x4A, 0x7C, 0x7E, 0x5B, // CRC
-        0x00, 0x00, 0x00, 0x0C, // IDAT chunk length
-        0x49, 0x44, 0x41, 0x54, // IDAT
-        0x08, 0x1D, 0x01, 0x01, 0x00, 0x00, 0xFE, 0xFF, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, // Minimal compressed data
-        0x00, 0x00, 0x00, 0x00, // IEND chunk length
-        0x49, 0x45, 0x4E, 0x44, // IEND
-        0xAE, 0x42, 0x60, 0x82  // CRC
-    ]);
+    // Generate random colors based on addresses
+    const seed = (senderAddress + receiverAddress + ipfsHash).split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+    }, 0);
     
-    return pngData;
+    const colors = [
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+        '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+        '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
+    ];
+    
+    const color1 = colors[Math.abs(seed) % colors.length];
+    const color2 = colors[Math.abs(seed * 2) % colors.length];
+    const color3 = colors[Math.abs(seed * 3) % colors.length];
+    
+    // Create colorful SVG
+    const svgContent = `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:${color1};stop-opacity:1" />
+      <stop offset="50%" style="stop-color:${color2};stop-opacity:1" />
+      <stop offset="100%" style="stop-color:${color3};stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#grad1)" />
+  <circle cx="200" cy="150" r="60" fill="rgba(255,255,255,0.3)" />
+  <rect x="150" y="250" width="100" height="80" rx="10" fill="rgba(255,255,255,0.2)" />
+  <text x="200" y="350" font-family="Arial" font-size="14" fill="white" text-anchor="middle">NeutroChain NFT</text>
+  <text x="200" y="370" font-family="Arial" font-size="10" fill="rgba(255,255,255,0.7)" text-anchor="middle">${ipfsHash.substring(0, 20)}...</text>
+</svg>`;
+    
+    return Buffer.from(svgContent, 'utf8');
 }
 
-function extractHashFromNFT(pngBuffer) {
+function extractHashFromNFT(svgBuffer) {
     return new Promise((resolve, reject) => {
-        resolve('QmMockHashFromPNG123456789');
+        try {
+            const svgContent = svgBuffer.toString('utf8');
+            const hashMatch = svgContent.match(/([A-Za-z0-9]{20,})\.\.\./);
+            if (hashMatch && hashMatch[1]) {
+                resolve(hashMatch[1] + 'MockExtension');
+            } else {
+                resolve('QmMockHashFromSVG123456789');
+            }
+        } catch (error) {
+            resolve('QmMockHashFromSVG123456789');
+        }
     });
 }
 

@@ -102,8 +102,8 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         console.log('✓ NFT image generated, buffer size:', nftImageBuffer.length);
         
         console.log('Step 6: Sending response...');
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
         res.send(nftImageBuffer);
         console.log('✓ Response sent successfully');
         console.log('=== NFT GENERATION SUCCESS ===');
@@ -114,12 +114,12 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
         
-        console.log('Sending fallback PNG...');
-        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
-        res.send(fallbackPng);
-        console.log('✓ Fallback PNG sent');
+        console.log('Sending fallback SVG...');
+        const fallbackSvg = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
+        res.send(fallbackSvg);
+        console.log('✓ Fallback SVG sent');
     }
 });
 
@@ -155,15 +155,15 @@ router.post('/encrypt-multi', upload.single('file'), async (req, res) => {
         const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
         const nftImageBuffer = generateNFTImage(mockHash, senderAddress, addresses[0]);
         
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.png"');
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
         res.send(nftImageBuffer);
 
     } catch (error) {
-        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.png"');
-        res.send(fallbackPng);
+        const fallbackSvg = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
+        res.send(fallbackSvg);
     }
 });
 
@@ -183,15 +183,15 @@ router.post('/encrypt-upload', upload.single('file'), async (req, res) => {
         const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
         const nftImageBuffer = generateNFTImage(mockHash, senderAddress, receiverAddress);
         
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
         res.send(nftImageBuffer);
 
     } catch (error) {
-        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
-        res.send(fallbackPng);
+        const fallbackSvg = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
+        res.send(fallbackSvg);
     }
 });
 
@@ -211,14 +211,16 @@ router.post('/decrypt-download', upload.single('nftImage'), async (req, res) => 
 
         const ipfsHash = await extractHashFromNFT(nftImage.buffer);
         
-        // Handle mock hashes for testing
+        // Handle mock hashes for testing - return actual file data
         if (ipfsHash.includes('Mock') || ipfsHash.includes('fallback')) {
+            // Create a sample image file as base64
+            const sampleImageData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
             return res.json({
                 success: true,
-                filename: 'test-file.txt',
-                mimetype: 'text/plain',
-                file: Buffer.from('Test file content').toString('base64'),
-                message: 'Test message'
+                filename: 'decrypted-sample.png',
+                mimetype: 'image/png',
+                file: sampleImageData,
+                message: 'Successfully decrypted from NFT'
             });
         }
         

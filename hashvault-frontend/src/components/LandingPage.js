@@ -234,11 +234,11 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} min-h-[3rem] flex items-center justify-center`}
           >
-            <span className="relative">
+            <span className="relative break-words overflow-hidden text-center w-full">
               {typewriterText.includes('<span') ? (
-                <span dangerouslySetInnerHTML={{ __html: typewriterText }} />
+                <span className="break-words" dangerouslySetInnerHTML={{ __html: typewriterText }} />
               ) : (
-                <span>{typewriterText}</span>
+                <span className="break-words">{typewriterText}</span>
               )}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
