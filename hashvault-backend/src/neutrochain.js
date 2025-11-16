@@ -122,8 +122,8 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         console.log('✓ NFT image generated, buffer size:', nftImageBuffer.length);
         
         console.log('Step 6: Sending response...');
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
         res.send(nftImageBuffer);
         console.log('✓ Response sent successfully');
         console.log('=== NFT GENERATION SUCCESS ===');
@@ -134,12 +134,12 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
         
-        console.log('Sending fallback SVG...');
-        const fallbackSvg = generateNFTImage('fallback', 'fallback', 'fallback');
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
-        res.send(fallbackSvg);
-        console.log('✓ Fallback SVG sent');
+        console.log('Sending fallback PNG...');
+        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
+        res.send(fallbackPng);
+        console.log('✓ Fallback PNG sent');
     }
 });
 
@@ -181,15 +181,15 @@ router.post('/encrypt-multi', upload.single('file'), async (req, res) => {
 
         const nftImageBuffer = generateNFTImage(ipfsHash, senderAddress, addresses[0]);
         
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.png"');
         res.send(nftImageBuffer);
 
     } catch (error) {
-        const fallbackSvg = generateNFTImage('fallback', 'fallback', 'fallback');
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
-        res.send(fallbackSvg);
+        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.png"');
+        res.send(fallbackPng);
     }
 });
 
@@ -215,15 +215,15 @@ router.post('/encrypt-upload', upload.single('file'), async (req, res) => {
 
         const nftImageBuffer = generateNFTImage(ipfsHash, senderAddress, receiverAddress);
         
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
         res.send(nftImageBuffer);
 
     } catch (error) {
-        const fallbackSvg = generateNFTImage('fallback', 'fallback', 'fallback');
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
-        res.send(fallbackSvg);
+        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
+        res.send(fallbackPng);
     }
 });
 
