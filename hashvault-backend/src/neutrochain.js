@@ -93,12 +93,32 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         }
         console.log('✓ Authorization verified');
         
-        console.log('Step 4: Generating mock hash...');
-        const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
-        console.log('✓ Mock hash generated:', mockHash);
+        console.log('Step 4: Creating recipient payload...');
+        const recipientSpecificPayload = {
+            filename: fileData.filename,
+            mimetype: fileData.mimetype,
+            file: fileData.fileData,
+            message: fileData.message || '',
+            timestamp: Date.now(),
+            boundTo: requestorAddress.toLowerCase(),
+            originalSender: fileData.senderAddress
+        };
+
+        console.log('Step 5: Encrypting data...');
+        const encryptedData = encryptWithWallet({
+            buffer: Buffer.from(JSON.stringify(recipientSpecificPayload)),
+            originalname: fileData.filename + '.bound',
+            mimetype: 'application/json'
+        }, requestorAddress, fileData.message || '');
         
-        console.log('Step 5: Generating NFT image...');
-        const nftImageBuffer = generateNFTImage(mockHash, fileData.senderAddress, requestorAddress);
+        console.log('Step 6: Uploading to Pinata...');
+        const ipfsHash = await uploadEncryptedToPinata({
+            buffer: encryptedData,
+            originalname: fileData.filename + '.enc'
+        });
+        
+        console.log('Step 7: Generating NFT image...');
+        const nftImageBuffer = generateNFTImage(ipfsHash, fileData.senderAddress, requestorAddress);
         console.log('✓ NFT image generated, buffer size:', nftImageBuffer.length);
         
         console.log('Step 6: Sending response...');
@@ -152,8 +172,14 @@ router.post('/encrypt-multi', upload.single('file'), async (req, res) => {
             return res.status(400).json({ error: 'Maximum 10 recipients allowed' });
         }
 
-        const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
-        const nftImageBuffer = generateNFTImage(mockHash, senderAddress, addresses[0]);
+        const encryptedData = encryptForMultipleRecipients(req.file, addresses, message);
+        
+        const ipfsHash = await uploadEncryptedToPinata({
+            buffer: encryptedData,
+            originalname: req.file.originalname + '.enc'
+        });
+
+        const nftImageBuffer = generateNFTImage(ipfsHash, senderAddress, addresses[0]);
         
         res.setHeader('Content-Type', 'image/svg+xml');
         res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
@@ -180,8 +206,14 @@ router.post('/encrypt-upload', upload.single('file'), async (req, res) => {
             return res.status(401).json({ error: 'Invalid signature' });
         }
 
-        const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
-        const nftImageBuffer = generateNFTImage(mockHash, senderAddress, receiverAddress);
+        const encryptedData = encryptWithWallet(req.file, receiverAddress, message);
+        
+        const ipfsHash = await uploadEncryptedToPinata({
+            buffer: encryptedData,
+            originalname: req.file.originalname + '.enc'
+        });
+
+        const nftImageBuffer = generateNFTImage(ipfsHash, senderAddress, receiverAddress);
         
         res.setHeader('Content-Type', 'image/svg+xml');
         res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
@@ -210,19 +242,6 @@ router.post('/decrypt-download', upload.single('nftImage'), async (req, res) => 
         }
 
         const ipfsHash = await extractHashFromNFT(nftImage.buffer);
-        
-        // Handle mock hashes for testing - return actual file data
-        if (ipfsHash.includes('Mock') || ipfsHash.includes('fallback')) {
-            // Create a sample image file as base64
-            const sampleImageData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
-            return res.json({
-                success: true,
-                filename: 'decrypted-sample.png',
-                mimetype: 'image/png',
-                file: sampleImageData,
-                message: 'Successfully decrypted from NFT'
-            });
-        }
         
         const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`, {
             responseType: 'text',

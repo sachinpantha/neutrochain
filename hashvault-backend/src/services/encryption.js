@@ -22,21 +22,21 @@ function encryptWithWallet(file, receiverAddress, message = '') {
     
     const authTag = cipher.getAuthTag();
     
-    const chachaKey = crypto.randomBytes(32);
-    const chachaNonce = crypto.randomBytes(12);
-    const chachaCipher = crypto.createCipheriv('chacha20-poly1305', chachaKey, chachaNonce);
-    chachaCipher.setAAD(Buffer.from('neutrochain-military'));
+    // Use AES-256-GCM instead of ChaCha20 for compatibility
+    const aes2Key = crypto.randomBytes(32);
+    const aes2Iv = crypto.randomBytes(16);
+    const aes2Cipher = crypto.createCipheriv('aes-256-gcm', aes2Key, aes2Iv);
     
-    let doubleEncrypted = chachaCipher.update(encrypted, 'hex', 'hex');
-    doubleEncrypted += chachaCipher.final('hex');
-    const chachaTag = chachaCipher.getAuthTag();
+    let doubleEncrypted = aes2Cipher.update(encrypted, 'hex', 'hex');
+    doubleEncrypted += aes2Cipher.final('hex');
+    const aes2Tag = aes2Cipher.getAuthTag();
     
     const keyEncryptionKey = crypto.pbkdf2Sync(receiverAddress.toLowerCase() + 'keyenc', salt, 50000, 32, 'sha512');
     const keyIv = crypto.randomBytes(16);
     const keyCipher = crypto.createCipheriv('aes-256-gcm', keyEncryptionKey, keyIv);
     
-    let encryptedChachaKey = keyCipher.update(chachaKey, null, 'hex');
-    encryptedChachaKey += keyCipher.final('hex');
+    let encryptedAes2Key = keyCipher.update(aes2Key, null, 'hex');
+    encryptedAes2Key += keyCipher.final('hex');
     const keyAuthTag = keyCipher.getAuthTag();
     
     return Buffer.from(JSON.stringify({
@@ -44,12 +44,12 @@ function encryptWithWallet(file, receiverAddress, message = '') {
         iv: iv.toString('hex'),
         salt: salt.toString('hex'),
         authTag: authTag.toString('hex'),
-        chachaNonce: chachaNonce.toString('hex'),
-        chachaTag: chachaTag.toString('hex'),
-        encryptedKey: encryptedChachaKey,
+        aes2Iv: aes2Iv.toString('hex'),
+        aes2Tag: aes2Tag.toString('hex'),
+        encryptedKey: encryptedAes2Key,
         keyIv: keyIv.toString('hex'),
         keyAuthTag: keyAuthTag.toString('hex'),
-        algorithm: 'aes-256-gcm+chacha20-poly1305',
+        algorithm: 'aes-256-gcm+aes-256-gcm',
         kdf: 'pbkdf2-sha512-100k'
     }));
 }
@@ -115,17 +115,16 @@ function decryptWithWallet(encryptedData, receiverAddress) {
         const keyDecipher = crypto.createDecipheriv('aes-256-gcm', keyEncryptionKey, keyIv);
         keyDecipher.setAuthTag(keyAuthTag);
         
-        let chachaKey = keyDecipher.update(data.encryptedKey, 'hex');
-        chachaKey = Buffer.concat([chachaKey, keyDecipher.final()]);
+        let aes2Key = keyDecipher.update(data.encryptedKey, 'hex');
+        aes2Key = Buffer.concat([aes2Key, keyDecipher.final()]);
         
-        const chachaNonce = Buffer.from(data.chachaNonce, 'hex');
-        const chachaTag = Buffer.from(data.chachaTag, 'hex');
-        const chachaDecipher = crypto.createDecipheriv('chacha20-poly1305', chachaKey, chachaNonce);
-        chachaDecipher.setAAD(Buffer.from('neutrochain-military'));
-        chachaDecipher.setAuthTag(chachaTag);
+        const aes2Iv = Buffer.from(data.aes2Iv, 'hex');
+        const aes2Tag = Buffer.from(data.aes2Tag, 'hex');
+        const aes2Decipher = crypto.createDecipheriv('aes-256-gcm', aes2Key, aes2Iv);
+        aes2Decipher.setAuthTag(aes2Tag);
         
-        let aesEncrypted = chachaDecipher.update(data.encrypted, 'hex', 'hex');
-        aesEncrypted += chachaDecipher.final('hex');
+        let aesEncrypted = aes2Decipher.update(data.encrypted, 'hex', 'hex');
+        aesEncrypted += aes2Decipher.final('hex');
         
         const key = crypto.pbkdf2Sync(receiverAddress.toLowerCase(), salt, 100000, 32, 'sha512');
         const iv = Buffer.from(data.iv, 'hex');

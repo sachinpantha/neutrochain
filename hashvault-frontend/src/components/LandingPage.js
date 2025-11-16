@@ -232,13 +232,13 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} min-h-[3rem] flex items-center justify-center`}
+            className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} min-h-[3rem] flex items-center justify-center overflow-hidden`}
           >
-            <span className="relative break-words overflow-hidden text-center w-full">
+            <span className="relative text-center w-full max-w-full" style={{ wordBreak: 'break-word', overflowWrap: 'break-word', hyphens: 'auto' }}>
               {typewriterText.includes('<span') ? (
-                <span className="break-words" dangerouslySetInnerHTML={{ __html: typewriterText }} />
+                <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: typewriterText }} />
               ) : (
-                <span className="break-words">{typewriterText}</span>
+                <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{typewriterText}</span>
               )}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
