@@ -232,22 +232,30 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} min-h-[3rem] flex items-center justify-center overflow-hidden`}
+            className={`text-sm sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-2 sm:px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} min-h-[3rem] flex items-center justify-center overflow-hidden`}
           >
-            <span className="relative text-center w-full max-w-full" style={{ wordBreak: 'break-word', overflowWrap: 'break-word', hyphens: 'auto' }}>
-              {typewriterText.includes('<span') ? (
-                <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: typewriterText }} />
-              ) : (
-                <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{typewriterText}</span>
-              )}
-              <motion.span
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="text-cyan-400 ml-1"
-              >
-                |
-              </motion.span>
-            </span>
+            <div className="w-full max-w-full overflow-hidden">
+              <span className="block text-center leading-relaxed" style={{ 
+                wordBreak: 'break-word', 
+                overflowWrap: 'anywhere', 
+                hyphens: 'auto',
+                maxWidth: '100%',
+                display: 'inline-block'
+              }}>
+                {typewriterText.includes('<span') ? (
+                  <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }} dangerouslySetInnerHTML={{ __html: typewriterText }} />
+                ) : (
+                  <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{typewriterText}</span>
+                )}
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="text-cyan-400 ml-1"
+                >
+                  |
+                </motion.span>
+              </span>
+            </div>
           </motion.div>
 
           <motion.div

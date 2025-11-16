@@ -14,7 +14,10 @@ function generateNFTImage(ipfsHash, senderAddress, receiverAddress) {
         const colors = [
             '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
             '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-            '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
+            '#F8C471', '#82E0AA', '#F1948A', '#D7BDE2', '#AED6F1',
+            '#A9DFBF', '#F9E79F', '#F5B7B1', '#D2B4DE', '#AED6F1',
+            '#85C1E9', '#7FB3D3', '#5DADE2', '#3498DB', '#2E86C1',
+            '#E74C3C', '#C0392B', '#A93226', '#922B21', '#7B241C'
         ];
         
         const color1 = colors[Math.abs(seed) % colors.length];
@@ -29,14 +32,35 @@ function generateNFTImage(ipfsHash, senderAddress, receiverAddress) {
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 400, 400);
         
-        // Add shapes
-        ctx.fillStyle = 'rgba(255,255,255,0.3)';
-        ctx.beginPath();
-        ctx.arc(200, 150, 60, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-        ctx.fillRect(150, 250, 100, 80);
+        // Add random shapes based on seed
+        const shapeCount = 3 + (Math.abs(seed) % 4);
+        for (let i = 0; i < shapeCount; i++) {
+            const shapeSeed = seed + i * 1000;
+            const x = 50 + (Math.abs(shapeSeed) % 300);
+            const y = 50 + (Math.abs(shapeSeed * 2) % 300);
+            const size = 30 + (Math.abs(shapeSeed * 3) % 80);
+            const opacity = 0.1 + (Math.abs(shapeSeed * 4) % 30) / 100;
+            
+            ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+            
+            if (shapeSeed % 3 === 0) {
+                // Circle
+                ctx.beginPath();
+                ctx.arc(x, y, size / 2, 0, 2 * Math.PI);
+                ctx.fill();
+            } else if (shapeSeed % 3 === 1) {
+                // Rectangle
+                ctx.fillRect(x - size/2, y - size/2, size, size * 0.6);
+            } else {
+                // Triangle
+                ctx.beginPath();
+                ctx.moveTo(x, y - size/2);
+                ctx.lineTo(x - size/2, y + size/2);
+                ctx.lineTo(x + size/2, y + size/2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
         
         // Add text
         ctx.fillStyle = 'white';

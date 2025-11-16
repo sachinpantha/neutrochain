@@ -6,7 +6,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'http://localhost:3001', 
+    'http://localhost:3001',
     /\.vercel\.app$/,
     /\.vercel\.com$/
   ],
@@ -19,5 +19,5 @@ app.use('/api/neutrochain', neutroChainRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running successfully on port ${PORT}`);
 });
