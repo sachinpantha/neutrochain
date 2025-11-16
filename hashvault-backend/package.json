@@ -1,11 +1,11 @@
 {
   "name": "hashvault-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js",
-    "prod": "NODE_ENV=production node index.js",
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +15,7 @@
     "axios": "^1.11.0",
     "canvas": "^2.11.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "ethers": "^6.13.4",
     "express": "^5.1.0",
     "multer": "^2.0.2"

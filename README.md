@@ -14,30 +14,30 @@ hashvault/
 
 ## Deployment
 
-### Option 1: Monorepo Deployment (Recommended)
-Deploy both frontend and backend together from the root directory:
-```bash
-vercel --prod
-```
+### Backend Deployment (Render)
+Deploy the backend to Render:
 
-### Option 2: Separate Deployments
-Deploy frontend and backend separately:
+1. Connect your GitHub repository to Render
+2. Create a new Web Service
+3. Set the root directory to `hashvault-backend`
+4. Render will automatically detect the `render.yaml` configuration
+5. Set up environment variables in Render dashboard
 
-**Frontend:**
+### Frontend Deployment (Vercel)
+Deploy the frontend to Vercel:
+
 ```bash
 cd hashvault-frontend
 vercel --prod
 ```
 
-**Backend:**
-```bash
-cd hashvault-backend
-vercel --prod
-```
-
 ## Environment Variables
 
-Make sure to set up environment variables in Vercel dashboard for:
+**Backend (Render):**
 - Backend API keys
 - Database connections
 - Blockchain network settings
+
+**Frontend (Vercel):**
+- Backend API URL (from Render deployment)
+- Frontend-specific configurations
