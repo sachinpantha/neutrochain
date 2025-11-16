@@ -9,72 +9,7 @@ import { Toaster } from 'react-hot-toast';
 const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
-  const [typewriterText, setTypewriterText] = useState('');
-  
-  useEffect(() => {
-    const descriptions = [
-      { text: "Send encrypted files using wallet addresses as keys.", highlights: [{ start: 5, end: 20, color: "text-cyan-400" }] },
-      { text: "Zero identity exposure. Complete anonymity guaranteed.", highlights: [{ start: 0, end: 22, color: "text-purple-400" }] },
-      { text: "Each transfer generates unique NFTs for privacy.", highlights: [{ start: 31, end: 35, color: "text-pink-400" }] },
-      { text: "Decentralized storage. No central surveillance.", highlights: [{ start: 0, end: 21, color: "text-green-400" }] },
-      { text: "Military-grade encryption. Untraceable transfers.", highlights: [{ start: 0, end: 25, color: "text-red-400" }] },
-      { text: "Your files. Your keys. Your privacy.", highlights: [{ start: 23, end: 36, color: "text-yellow-400" }] }
-    ];
-    let currentIndex = 0;
-    let currentText = '';
-    let isDeleting = false;
-    let charIndex = 0;
-    let timeoutId;
-    
-    const type = () => {
-      
-      const desc = descriptions[currentIndex];
-      const fullText = desc.text;
-      
-      if (!isDeleting) {
-        currentText = fullText.substring(0, charIndex + 1);
-        charIndex++;
-        
-        if (charIndex === fullText.length) {
-          timeoutId = setTimeout(() => {
-            isDeleting = true;
-            type();
-          }, 2500);
-          
-          // Apply highlights to complete text
-          let highlightedText = currentText;
-          desc.highlights.forEach(h => {
-            const before = highlightedText.substring(0, h.start);
-            const highlight = highlightedText.substring(h.start, h.end);
-            const after = highlightedText.substring(h.end);
-            highlightedText = before + `<span class="${h.color} font-semibold">${highlight}</span>` + after;
-          });
-          
-          setTypewriterText(highlightedText);
-          return;
-        }
-      } else {
-        currentText = fullText.substring(0, charIndex - 1);
-        charIndex--;
-        
-        if (charIndex === 0) {
-          isDeleting = false;
-          currentIndex = (currentIndex + 1) % descriptions.length;
-        }
-      }
-      
-      setTypewriterText(currentText);
-      
-      const speed = isDeleting ? 15 : 25;
-      timeoutId = setTimeout(type, speed);
-    };
-    
-    type();
-    
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, []);
+
 
   const connectWallet = async () => {
     if (!window.ethereum) {
@@ -228,43 +163,16 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             </span>
           </motion.h1>
 
-          <motion.div
+          <motion.p
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className={`text-sm sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-2 sm:px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} flex items-center justify-center overflow-hidden`}
-            style={{
-              height: '4.5rem', // Fixed height to prevent vertical shifting
-              width: '100%',
-              maxWidth: '48rem' // Fixed max width
-            }}
+            className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-4 text-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
           >
-            <div className="w-full h-full flex items-center justify-center overflow-hidden">
-              <span className="block text-center leading-tight" style={{ 
-                wordBreak: 'break-word', 
-                overflowWrap: 'anywhere', 
-                hyphens: 'auto',
-                maxWidth: '100%',
-                maxHeight: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                {typewriterText.includes('<span') ? (
-                  <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }} dangerouslySetInnerHTML={{ __html: typewriterText }} />
-                ) : (
-                  <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{typewriterText}</span>
-                )}
-                <motion.span
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="text-cyan-400 ml-1"
-                >
-                  |
-                </motion.span>
-              </span>
-            </div>
-          </motion.div>
+            Send <span className="text-cyan-400 font-semibold">encrypted files</span> using wallet addresses as keys.
+            <br className="hidden sm:block" />
+            <span className="text-purple-400 font-semibold">Zero identity exposure.</span> Complete anonymity guaranteed.
+          </motion.p>
 
           <motion.div
             initial={{ y: 50, opacity: 0 }}
