@@ -97,14 +97,13 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
         console.log('✓ Mock hash generated:', mockHash);
         
-        console.log('Step 5: Creating SVG directly...');
-        const svgContent = `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#4F46E5"/><text x="200" y="200" font-family="Arial" font-size="24" fill="white" text-anchor="middle">NeutroChain NFT</text><text x="200" y="250" font-family="Arial" font-size="12" fill="white" text-anchor="middle">${mockHash}</text></svg>`;
-        const nftImageBuffer = Buffer.from(svgContent, 'utf8');
+        console.log('Step 5: Generating NFT image...');
+        const nftImageBuffer = generateNFTImage(mockHash, fileData.senderAddress, requestorAddress);
         console.log('✓ NFT image generated, buffer size:', nftImageBuffer.length);
         
         console.log('Step 6: Sending response...');
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
         res.send(nftImageBuffer);
         console.log('✓ Response sent successfully');
         console.log('=== NFT GENERATION SUCCESS ===');
@@ -115,12 +114,12 @@ router.post('/generate-nft/:fileId', async (req, res) => {
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
         
-        console.log('Sending fallback SVG...');
-        const fallbackSvg = `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#4F46E5"/><text x="200" y="200" font-family="Arial" font-size="24" fill="white" text-anchor="middle">NeutroChain NFT</text></svg>`;
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
-        res.send(Buffer.from(fallbackSvg, 'utf8'));
-        console.log('✓ Fallback SVG sent');
+        console.log('Sending fallback PNG...');
+        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
+        res.send(fallbackPng);
+        console.log('✓ Fallback PNG sent');
     }
 });
 
@@ -156,15 +155,15 @@ router.post('/encrypt-multi', upload.single('file'), async (req, res) => {
         const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
         const nftImageBuffer = generateNFTImage(mockHash, senderAddress, addresses[0]);
         
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.png"');
         res.send(nftImageBuffer);
 
     } catch (error) {
-        const fallbackSvg = `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#4F46E5"/><text x="200" y="200" font-family="Arial" font-size="24" fill="white" text-anchor="middle">NeutroChain NFT</text></svg>`;
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.svg"');
-        res.send(Buffer.from(fallbackSvg, 'utf8'));
+        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-multi-nft.png"');
+        res.send(fallbackPng);
     }
 });
 
@@ -184,15 +183,15 @@ router.post('/encrypt-upload', upload.single('file'), async (req, res) => {
         const mockHash = 'Qm' + Math.random().toString(36).substring(2, 48);
         const nftImageBuffer = generateNFTImage(mockHash, senderAddress, receiverAddress);
         
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
         res.send(nftImageBuffer);
 
     } catch (error) {
-        const fallbackSvg = `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#4F46E5"/><text x="200" y="200" font-family="Arial" font-size="24" fill="white" text-anchor="middle">NeutroChain NFT</text></svg>`;
-        res.setHeader('Content-Type', 'image/svg+xml');
-        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.svg"');
-        res.send(Buffer.from(fallbackSvg, 'utf8'));
+        const fallbackPng = generateNFTImage('fallback', 'fallback', 'fallback');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'attachment; filename="neutrochain-nft.png"');
+        res.send(fallbackPng);
     }
 });
 
