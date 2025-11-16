@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const neutroChainRouter = require('./neutrochain');
+const neutroChainRouter = require('./src/neutrochain');
 app.use('/api/neutrochain', neutroChainRouter);
 
 const PORT = process.env.PORT || 5000;
