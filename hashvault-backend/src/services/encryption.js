@@ -24,7 +24,7 @@ function encryptWithWallet(file, receiverAddress, message = '') {
     
     const chachaKey = crypto.randomBytes(32);
     const chachaNonce = crypto.randomBytes(12);
-    const chachaCipher = crypto.createCipher('chacha20-poly1305', chachaKey);
+    const chachaCipher = crypto.createCipheriv('chacha20-poly1305', chachaKey, chachaNonce);
     chachaCipher.setAAD(Buffer.from('neutrochain-military'));
     
     let doubleEncrypted = chachaCipher.update(encrypted, 'hex', 'hex');
@@ -120,7 +120,7 @@ function decryptWithWallet(encryptedData, receiverAddress) {
         
         const chachaNonce = Buffer.from(data.chachaNonce, 'hex');
         const chachaTag = Buffer.from(data.chachaTag, 'hex');
-        const chachaDecipher = crypto.createDecipher('chacha20-poly1305', chachaKey);
+        const chachaDecipher = crypto.createDecipheriv('chacha20-poly1305', chachaKey, chachaNonce);
         chachaDecipher.setAAD(Buffer.from('neutrochain-military'));
         chachaDecipher.setAuthTag(chachaTag);
         
