@@ -232,15 +232,23 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className={`text-sm sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-2 sm:px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} min-h-[3rem] flex items-center justify-center overflow-hidden`}
+            className={`text-sm sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-2 sm:px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} flex items-center justify-center overflow-hidden`}
+            style={{
+              height: '4.5rem', // Fixed height to prevent vertical shifting
+              width: '100%',
+              maxWidth: '48rem' // Fixed max width
+            }}
           >
-            <div className="w-full max-w-full overflow-hidden">
-              <span className="block text-center leading-relaxed" style={{ 
+            <div className="w-full h-full flex items-center justify-center overflow-hidden">
+              <span className="block text-center leading-tight" style={{ 
                 wordBreak: 'break-word', 
                 overflowWrap: 'anywhere', 
                 hyphens: 'auto',
                 maxWidth: '100%',
-                display: 'inline-block'
+                maxHeight: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}>
                 {typewriterText.includes('<span') ? (
                   <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }} dangerouslySetInnerHTML={{ __html: typewriterText }} />
