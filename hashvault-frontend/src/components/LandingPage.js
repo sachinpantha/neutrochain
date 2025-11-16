@@ -77,34 +77,7 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
         <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000"></div>
       </div>
 
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 20 }, (_, i) => {
-          const initialX = (i * 5) % 100;
-          const initialY = (i * 7) % 100;
-          return (
-            <motion.div
-              key={`particle-${i}`}
-              className="absolute w-2 h-2 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full"
-              animate={{
-                x: [0, 60, 0],
-                y: [0, -80, 0],
-                opacity: [0, 1, 0]
-              }}
-              transition={{
-                duration: 4 + (i % 3),
-                repeat: Infinity,
-                delay: i * 0.2,
-                ease: "easeInOut"
-              }}
-              style={{
-                left: `${initialX}%`,
-                top: `${initialY}%`
-              }}
-            />
-          );
-        })}
-      </div>
+
 
 
 
