@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaRocket, FaShieldAlt, FaGem, FaBolt, FaCode, FaGlobe, FaUserSecret, FaEyeSlash, FaMask } from 'react-icons/fa';
 import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
 import { Wallet } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+import DeviceMockups from './DeviceMockups';
+import FeatureShowcase from './FeatureShowcase';
 
 const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
   const [isConnected, setIsConnected] = useState(false);
@@ -102,19 +104,19 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
         </motion.header>
 
         {/* Hero Section */}
-        <section className="container mx-auto px-4 sm:px-6 py-10 sm:py-20 text-center">
+        <section className="container mx-auto px-4 sm:px-6 py-8 sm:py-16 lg:py-20 text-center">
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-6 sm:mb-8 border border-gray-500/20">
-              <FaUserSecret className="text-cyan-400 w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="inline-flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-full px-3 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 lg:mb-8 border border-gray-500/20">
+              <FaUserSecret className="text-cyan-400 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
               <span className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 Anonymous • Secure • Untraceable
               </span>
-              <FaEyeSlash className="text-purple-400 w-4 h-4 sm:w-5 sm:h-5" />
+              <FaEyeSlash className="text-purple-400 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
             </div>
           </motion.div>
 
@@ -122,7 +124,7 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className={`text-4xl sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-6 leading-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}
+            className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-3 sm:mb-4 lg:mb-6 leading-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}
           >
             Secure File Transfer
             <br />
@@ -135,7 +137,7 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className={`text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto px-4 text-center ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+            className={`text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 lg:mb-12 max-w-3xl mx-auto px-2 sm:px-4 text-center leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
           >
             Send <span className="text-cyan-400 font-semibold">encrypted files</span> using wallet addresses as keys.
             <br className="hidden sm:block" />
@@ -146,14 +148,14 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-md sm:max-w-none mx-auto"
           >
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
               whileTap={{ scale: 0.95 }}
               onClick={connectWallet}
               disabled={connecting || isConnected}
-              className={`w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center space-x-2 ${
+              className={`w-full sm:w-auto px-5 sm:px-6 lg:px-8 py-3 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-semibold rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center space-x-2 ${
                 isConnected 
                   ? 'bg-green-500 text-white hover:shadow-green-500/25' 
                   : 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-cyan-500/25'
@@ -161,18 +163,18 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             >
               {connecting ? (
                 <>
-                  <Wallet className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                  <span>Connecting...</span>
+                  <Wallet className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5 animate-spin" />
+                  <span className="text-sm sm:text-base">Connecting...</span>
                 </>
               ) : isConnected ? (
                 <>
-                  <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>MetaMask Connected</span>
+                  <Wallet className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
+                  <span className="text-sm sm:text-base">MetaMask Connected</span>
                 </>
               ) : (
                 <>
-                  <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Authorize MetaMask</span>
+                  <Wallet className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
+                  <span className="text-sm sm:text-base">Authorize MetaMask</span>
                 </>
               )}
             </motion.button>
@@ -181,10 +183,10 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onViewDocs}
-              className={`w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 border-2 ${darkMode ? 'text-white border-gray-600 hover:border-gray-500' : 'text-gray-900 border-gray-300 hover:border-gray-400'} text-base sm:text-lg font-semibold rounded-full transition-all duration-300 flex items-center justify-center space-x-2`}
+              className={`w-full sm:w-auto px-5 sm:px-6 lg:px-8 py-3 sm:py-3 lg:py-4 border-2 ${darkMode ? 'text-white border-gray-600 hover:border-gray-500' : 'text-gray-900 border-gray-300 hover:border-gray-400'} text-sm sm:text-base lg:text-lg font-semibold rounded-full transition-all duration-300 flex items-center justify-center space-x-2`}
             >
-              <FaCode className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>View Docs</span>
+              <FaCode className="w-4 h-4 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
+              <span className="text-sm sm:text-base">View Docs</span>
             </motion.button>
           </motion.div>
         </section>
@@ -194,17 +196,17 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="container mx-auto px-4 sm:px-6 py-10 sm:py-20"
+          className="container mx-auto px-4 sm:px-6 py-8 sm:py-16 lg:py-20"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className={`text-center p-4 sm:p-6 rounded-2xl ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}
+                className={`text-center p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}
               >
-                <div className="text-2xl sm:text-3xl mb-2 text-cyan-400">{stat.icon}</div>
-                <div className={`text-2xl sm:text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className="text-xl sm:text-2xl lg:text-3xl mb-1 sm:mb-2 text-cyan-400">{stat.icon}</div>
+                <div className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   {stat.number}
                 </div>
                 <div className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -215,15 +217,21 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
           </div>
         </motion.section>
 
+        {/* Device Mockups Section */}
+        <DeviceMockups darkMode={darkMode} />
+
+        {/* Feature Showcase Section */}
+        <FeatureShowcase darkMode={darkMode} />
+
         {/* Features Section */}
-        <section className="container mx-auto px-4 sm:px-6 py-10 sm:py-20">
+        <section className="container mx-auto px-4 sm:px-6 py-8 sm:py-16 lg:py-20">
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-12 lg:mb-16"
           >
-            <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 lg:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Stay
               <span className="bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"> Anonymous</span>
             </h2>
@@ -231,7 +239,7 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.4 }}
-              className={`text-lg sm:text-xl max-w-2xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+              className={`text-base sm:text-lg lg:text-xl max-w-2xl mx-auto px-2 sm:px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
             >
               <motion.span
                 initial={{ opacity: 0 }}
@@ -270,7 +278,7 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
             </motion.p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -278,13 +286,13 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 1.4 + index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -10 }}
-                className={`p-6 sm:p-8 rounded-2xl ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} hover:shadow-2xl transition-all duration-300 cursor-pointer group`}
+                className={`p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} hover:shadow-2xl transition-all duration-300 cursor-pointer group`}
               >
-                <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white mb-4 sm:mb-6 group-hover:shadow-lg`}>
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white mb-3 sm:mb-4 lg:mb-6 group-hover:shadow-lg`}>
                   {feature.icon}
                 </div>
                 
-                <h3 className={`text-lg sm:text-xl font-bold mb-3 sm:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h3 className={`text-base sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3 lg:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   {feature.title}
                 </h3>
                 
@@ -301,30 +309,30 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.8 }}
-          className="container mx-auto px-4 sm:px-6 py-10 sm:py-20 text-center"
+          className="container mx-auto px-4 sm:px-6 py-8 sm:py-16 lg:py-20 text-center"
         >
-          <div className={`rounded-3xl p-6 sm:p-12 ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-12 ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <motion.div
               animate={{ 
                 opacity: [0.7, 1, 0.7],
                 scale: [1, 1.05, 1]
               }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="inline-block mb-6"
+              className="inline-block mb-4 sm:mb-6"
             >
               <div className="relative">
-                <FaUserSecret className="w-16 h-16 text-gray-500" />
+                <FaUserSecret className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-gray-500" />
                 <motion.div
                   animate={{ opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                  className="absolute -top-2 -right-2"
+                  className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2"
                 >
-                  <FaEyeSlash className="w-6 h-6 text-cyan-400" />
+                  <FaEyeSlash className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-cyan-400" />
                 </motion.div>
               </div>
             </motion.div>
             
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 lg:mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Ready to Go{' '}
               <motion.span 
                 animate={{ 
@@ -351,7 +359,7 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
               </motion.span>?
             </h2>
             
-            <p className={`text-lg sm:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <p className={`text-base sm:text-lg lg:text-xl mb-4 sm:mb-6 lg:mb-8 max-w-2xl mx-auto px-2 sm:px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Join the shadow network. Transfer files without leaving a trace.
             </p>
             
@@ -364,18 +372,18 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 2 }}
-          className={`border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'} py-8 sm:py-12`}
+          className={`border-t ${darkMode ? 'border-gray-800' : 'border-gray-200'} py-6 sm:py-8 lg:py-12`}
         >
           <div className="container mx-auto px-4 sm:px-6 text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <FaBolt className="text-white w-3 h-3 sm:w-4 sm:h-4" />
+            <div className="flex items-center justify-center space-x-2 mb-3 sm:mb-4">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <FaBolt className="text-white w-3 h-3 sm:w-3 sm:h-3 lg:w-4 lg:h-4" />
               </div>
-              <span className={`text-lg sm:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent`}>
+              <span className={`text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent`}>
                 NeutroChain
               </span>
             </div>
-            <p className={`text-sm sm:text-base ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className={`text-xs sm:text-sm lg:text-base ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Decentralized • Secure • Future-Ready
             </p>
           </div>

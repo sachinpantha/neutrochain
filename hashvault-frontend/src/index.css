@@ -6,6 +6,17 @@
   * {
     font-family: 'Poppins', sans-serif;
   }
+  
+  /* Ensure proper viewport behavior */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  /* Improve tap highlighting */
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 }
 
 @layer utilities {
@@ -43,4 +54,56 @@ html {
   border: 2px solid transparent;
   background: linear-gradient(white, white) padding-box,
               linear-gradient(45deg, #06b6d4, #8b5cf6) border-box;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  /* Improve touch targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Better text rendering on mobile */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Optimize animations for mobile */
+  * {
+    will-change: auto;
+  }
+  
+  /* Reduce motion for better performance */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Optimize for tablet touch */
+  button, a {
+    min-height: 40px;
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    font-size: 16px;
+  }
 }
