@@ -126,7 +126,7 @@ const FeatureShowcase = ({ darkMode }) => {
                 <div className="mb-4">
                   <div className={`relative flex rounded-xl p-1 ${darkMode ? 'bg-gray-800' : 'bg-gray-300'}`}>
                     <motion.div
-                      animate={{ x: [0, 100, 200, 100, 0] }}
+                      animate={{ x: [0, '100%', '200%', '100%', 0] }}
                       transition={{ duration: 8, repeat: Infinity }}
                       className="absolute top-1 bottom-1 w-1/3 bg-blue-500 rounded-lg"
                     />

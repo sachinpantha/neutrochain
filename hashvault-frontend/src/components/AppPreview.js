@@ -84,9 +84,9 @@ const AppPreview = ({ darkMode }) => {
               <div className="relative mb-8">
                 <div className={`flex rounded-xl p-1 ${darkMode ? 'bg-gray-800' : 'bg-gray-200'} max-w-md mx-auto`}>
                   <motion.div
-                    animate={{ x: [0, 100, 200, 100, 0] }}
+                    animate={{ x: [0, 120, 240, 120, 0] }}
                     transition={{ duration: 8, repeat: Infinity }}
-                    className="absolute top-1 bottom-1 w-1/3 bg-blue-500 rounded-lg"
+                    className="absolute top-1 bottom-1 w-1/3 bg-red-500 rounded-lg"
                   />
                   <div className="relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-white">
                     <FaUpload className="w-4 h-4" />
@@ -213,39 +213,7 @@ const AppPreview = ({ darkMode }) => {
           </div>
         </motion.div>
 
-        {/* Floating Elements */}
-        <motion.div
-          animate={{ 
-            y: [0, -20, 0],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="absolute -top-8 -left-8 w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-2xl flex items-center justify-center shadow-lg"
-        >
-          <FaShieldAlt className="text-white text-xl" />
-        </motion.div>
 
-        <motion.div
-          animate={{ 
-            y: [0, -15, 0],
-            rotate: [0, -5, 0]
-          }}
-          transition={{ duration: 5, repeat: Infinity, delay: 1 }}
-          className="absolute -bottom-8 -right-8 w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center shadow-lg"
-        >
-          <FaLock className="text-white text-xl" />
-        </motion.div>
-
-        <motion.div
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.7, 1, 0.7]
-          }}
-          transition={{ duration: 3, repeat: Infinity }}
-          className="absolute top-1/4 -right-12 w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center shadow-lg"
-        >
-          <FaEye className="text-white text-sm" />
-        </motion.div>
 
         {/* Background Glow Effects */}
         <div className="absolute inset-0 -z-10">
