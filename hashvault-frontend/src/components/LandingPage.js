@@ -7,6 +7,7 @@ import { Wallet } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import DeviceMockups from './DeviceMockups';
 import FeatureShowcase from './FeatureShowcase';
+import AnimatedCounter from './AnimatedCounter';
 
 const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
   const [isConnected, setIsConnected] = useState(false);
@@ -64,10 +65,10 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
   ];
 
   const stats = [
-    { number: "10K+", label: "Files Transferred", icon: <FaRocket /> },
-    { number: "5K+", label: "NFTs Generated", icon: <FaGem /> },
+    { number: "10K", label: "Files Transferred", icon: <FaRocket /> },
+    { number: "5K", label: "NFTs Generated", icon: <FaGem /> },
     { number: "99.9%", label: "Uptime", icon: <FaShieldAlt /> },
-    { number: "50+", label: "Countries", icon: <FaGlobe /> }
+    { number: "50", label: "Countries", icon: <FaGlobe /> }
   ];
 
   return (
@@ -207,7 +208,11 @@ const LandingPage = ({ onEnterApp, onViewDocs, darkMode }) => {
               >
                 <div className="text-xl sm:text-2xl lg:text-3xl mb-1 sm:mb-2 text-cyan-400">{stat.icon}</div>
                 <div className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  {stat.number}
+                  <AnimatedCounter 
+                    end={stat.number} 
+                    duration={2500}
+                    suffix={stat.number.includes('K') ? '+' : stat.number.includes('%') ? '' : '+'}
+                  />
                 </div>
                 <div className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   {stat.label}
