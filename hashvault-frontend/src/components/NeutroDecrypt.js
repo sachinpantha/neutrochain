@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
-import { Download, Wallet, FileText } from 'lucide-react';
+import { Eye, Wallet, FileText } from 'lucide-react';
 import { apiService } from '../utils/api';
+import FilePreview from './FilePreview';
 
 const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
   const [nftFile, setNftFile] = useState(null);
@@ -10,6 +11,7 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
   const [decrypting, setDecrypting] = useState(false);
   const [decryptedData, setDecryptedData] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [previewFile, setPreviewFile] = useState(null);
 
   const handleNftUpload = (e) => {
     const file = e.target.files[0];
@@ -75,24 +77,7 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
     }
   };
 
-  const downloadFile = () => {
-    if (!decryptedData) return;
 
-    const byteCharacters = atob(decryptedData.file);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: decryptedData.mimetype });
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = decryptedData.filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div className={`p-8 rounded-2xl shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
@@ -178,15 +163,24 @@ const NeutroDecrypt = ({ darkMode, connectedWallet }) => {
                 <p className="text-sm mb-2">Message: "{decryptedData.message}"</p>
               )}
               <button
-                onClick={downloadFile}
+                onClick={() => setPreviewFile(decryptedData)}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2"
               >
-                <Download className="w-4 h-4" />
-                Download File
+                <Eye className="w-4 h-4" />
+                Preview File
               </button>
             </div>
           )}
         </div>
+        
+      {/* File Preview Modal */}
+      {previewFile && (
+        <FilePreview
+          file={previewFile}
+          onClose={() => setPreviewFile(null)}
+          darkMode={darkMode}
+        />
+      )}
     </div>
   );
 };

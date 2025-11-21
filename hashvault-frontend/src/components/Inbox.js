@@ -1,14 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ethers } from 'ethers';
 import toast from 'react-hot-toast';
-import { Download, Image, Trash2, Mail, X, Search, Users } from 'lucide-react';
+import { Eye, Image, Trash2, Mail, X, Search, Users } from 'lucide-react';
 import { apiService } from '../utils/api';
+import FilePreview from './FilePreview';
 
 const Inbox = ({ darkMode, connectedWallet }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [previewFile, setPreviewFile] = useState(null);
 
   const fetchInboxFiles = useCallback(async () => {
     try {
@@ -26,22 +28,7 @@ const Inbox = ({ darkMode, connectedWallet }) => {
     fetchInboxFiles();
   }, [fetchInboxFiles]);
 
-  const downloadFile = (file) => {
-    const byteCharacters = atob(file.fileData);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: file.mimetype });
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = file.filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+
 
   const generateNFT = async (fileId) => {
     try {
@@ -166,11 +153,11 @@ const Inbox = ({ darkMode, connectedWallet }) => {
               
               <div className="flex gap-2">
                 <button
-                  onClick={() => downloadFile(file)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm"
+                  onClick={() => setPreviewFile(file)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg text-sm"
                 >
-                  <Download className="w-4 h-4" />
-                  Download
+                  <Eye className="w-4 h-4" />
+                  Preview
                 </button>
                 <button
                   onClick={() => generateNFT(file.id)}
@@ -214,6 +201,15 @@ const Inbox = ({ darkMode, connectedWallet }) => {
             </div>
           </div>
         </div>
+      )}
+      
+      {/* File Preview Modal */}
+      {previewFile && (
+        <FilePreview
+          file={previewFile}
+          onClose={() => setPreviewFile(null)}
+          darkMode={darkMode}
+        />
       )}
     </div>
   );
